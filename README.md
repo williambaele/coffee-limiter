@@ -5,7 +5,7 @@ As a coffee addict sometimes I do have troubles to limit my coffee consumption. 
 
 
 ## Features
-
+- User sets his daily consumption on first visit
 - Coutdown of remaining cups
-- Auto reset on every day
+- Auto reset everyday
 - Local storage to keep the latest remaining cups
