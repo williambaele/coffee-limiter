@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Coffee } from "lucide-react";
 import { useEffect, useState } from "react";
+import Head from "next/head";
 
 import {
   Dialog,
@@ -83,6 +84,16 @@ export default function Home() {
 
   return (
     <>
+      <div>
+        <Head>
+          <link
+            rel="icon"
+            href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎯</text></svg>"
+          />
+                  <title>My page title</title>
+
+        </Head>
+      </div>
       <main className="flex h-screen flex-col items-center space-y-20 justify-center">
         <div className="flex flex-col space-y-4 items-center">
           <h1 className="text-5xl lg:text-6xl font-bold">Coffee Limiter</h1>
