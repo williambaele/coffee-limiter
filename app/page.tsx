@@ -1,17 +1,39 @@
 "use client";
+
 import { Button } from "@/components/ui/button";
 import { Coffee } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Modal } from "@/components/ui/modal";
+
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+
 export default function Home() {
-  const [lives, setLives] = useState(5);
+  // Constants
   const [consumptionLoading, setConsumptionLoading] = useState(true);
+  const [userChosen, setUserChosen] = useState(false);
+  const [userCups, setUserCups] = useState(5);
+
+  // Fetching data from local storage
   useEffect(() => {
     const remainingLives = localStorage.getItem("RemainingLives");
     const lastCoffeeTime = localStorage.getItem("LastCoffeeTime");
+    const userCupsNb = localStorage.getItem("userCupsNb");
+
+    if (userCupsNb) {
+      setUserCups(JSON.parse(userCupsNb));
+      setUserChosen(true);
+      setConsumptionLoading(false);
+    }
 
     if (remainingLives) {
-      setLives(JSON.parse(remainingLives));
+      setUserCups(JSON.parse(remainingLives));
       setConsumptionLoading(false);
     }
 
@@ -22,19 +44,26 @@ export default function Home() {
       yesterday.setDate(today.getDate() - 1);
 
       if (lastCoffeeDate < yesterday) {
-        // Reset lives if the last coffee was consumed yesterday
-        setLives(5);
-        localStorage.setItem("RemainingLives", JSON.stringify(5));
+        const userCupsNb = localStorage.getItem("userCupsNb");
+
+        setUserCups(Number(userCupsNb));
+        localStorage.setItem("RemainingLives", JSON.stringify(userCupsNb));
       }
       setConsumptionLoading(false);
     }
-    setConsumptionLoading(false);
   }, []);
 
+  // Handle setting user's daily consumption
+  const handleUserCups = () => {
+    setUserChosen(true);
+    localStorage.setItem("userCupsNb", JSON.stringify(userCups)); // Use correct key
+  };
+
+  // Handle consuming a coffee
   const handleCoffee = () => {
-    if (lives > 0) {
-      setLives(lives - 1);
-      localStorage.setItem("RemainingLives", JSON.stringify(lives - 1));
+    if (userCups > 0) {
+      setUserCups(userCups - 1);
+      localStorage.setItem("RemainingLives", JSON.stringify(userCups - 1));
       localStorage.setItem(
         "LastCoffeeTime",
         JSON.stringify(new Date().getTime())
@@ -43,17 +72,11 @@ export default function Home() {
   };
 
   const RemainingLives = () => {
-    if (lives === 5) {
-      return <p>Enjoy your day with 5 coffees</p>;
-    } else if (lives === 4) {
-      return <p>4 coffees left</p>;
-    } else if (lives === 3) {
-      return <p>3 coffees left</p>;
-    } else if (lives === 2) {
-      return <p>2 coffees left</p>;
-    } else if (lives === 1) {
+    if (userCups >= 2) {
+      return <p>Enjoy your day with {userCups} coffees</p>;
+    } else if (userCups === 1) {
       return <p>Last coffee. Enjoy it</p>;
-    } else if (lives === 0) {
+    } else if (userCups === 0) {
       return <p>Time to stop drinking coffee for today</p>;
     }
   };
@@ -70,11 +93,48 @@ export default function Home() {
             Don&apos;t overdo it.
           </p>
         </div>
-        <Button className="rounded-xl" onClick={handleCoffee}>
-          <Coffee className="mr-2 h-4 w-4" /> Just drank a coffee
-        </Button>
-        {consumptionLoading ? <p>Loading consumption</p> : <RemainingLives />}
-        <Modal />
+
+        {userChosen ? (
+          <>
+            <Button className="rounded-xl" onClick={handleCoffee}>
+              <Coffee className="mr-2 h-4 w-4" /> Just drank a coffee
+            </Button>
+            {consumptionLoading ? (
+              <p>Loading consumption</p>
+            ) : (
+              <RemainingLives />
+            )}
+          </>
+        ) : (
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button className="rounded-xl">Set daily consumption</Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-md rounded-lg">
+              <DialogHeader>
+                <DialogTitle>Choose a target</DialogTitle>
+                <DialogDescription>
+                  Set a daily consumption you are not going to exceed.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="flex items-center space-x-2">
+                <Input
+                  type="number"
+                  id="link"
+                  defaultValue={userCups}
+                  onChange={(e) => setUserCups(Number(e.target.value))}
+                />
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={handleUserCups}
+                >
+                  Set
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
+        )}
       </main>
     </>
   );
