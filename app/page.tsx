@@ -38,25 +38,28 @@ export default function Home() {
 
     if (lastCoffeeTime) {
       const lastCoffeeDate = new Date(parseInt(lastCoffeeTime));
-      const today = new Date();
-      const yesterday = new Date(today);
-      yesterday.setDate(today.getDate() - 1);
 
+      // Define currentDateBrowser as today's date at midnight
+      const currentDateBrowser = new Date();
+      currentDateBrowser.setHours(0, 0, 0, 0);
+
+      const yesterday = new Date(currentDateBrowser);
+      yesterday.setDate(yesterday.getDate() - 1);
+
+      // Check if the last coffee was consumed the day before the current day
       if (lastCoffeeDate < yesterday) {
-        setUserCups(Number(userCupsNb)); // Reset user's chosen daily consumption to default value
+        setUserCups(Number(userCupsNb));
         localStorage.setItem("RemainingLives", JSON.stringify(userCupsNb));
         setConsumptionLoading(false);
       }
     }
   }, []);
 
-
   // Handle setting user's daily consumption
   const handleUserCups = () => {
     setUserChosen(true);
     localStorage.setItem("userCupsNb", JSON.stringify(userCups));
     setConsumptionLoading(false);
-
   };
 
   // Handle consuming a coffee
