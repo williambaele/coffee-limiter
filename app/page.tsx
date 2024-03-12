@@ -95,7 +95,7 @@ export default function Home() {
           <>
             <button
               onClick={handleCoffee}
-              className="relative px-8 py-2 rounded-lg bg-white text-slate-200 isolation-auto z-10 before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-left-full before:hover:left-0 before:rounded-full before:bg-slate-400 before:-z-10 before:aspect-square before:hover:scale-150 overflow-hidden before:hover:duration-700"
+              className="relative px-8 py-2 rounded-xl bg-white text-slate-950 isolation-auto z-10 before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-left-full before:hover:left-0 before:rounded-full before:bg-slate-200 before:-z-10 before:aspect-square before:hover:scale-150 overflow-hidden before:hover:duration-700"
             >
               Just drank a coffee
             </button>
