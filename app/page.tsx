@@ -24,39 +24,37 @@ export default function Home() {
     const remainingLives = localStorage.getItem("RemainingLives");
     const lastCoffeeTime = localStorage.getItem("LastCoffeeTime");
     const userCupsNb = localStorage.getItem("userCupsNb");
-
+  
     if (userCupsNb) {
       setUserCups(Number(userCupsNb));
       setUserChosen(true);
       setConsumptionLoading(false);
     }
-
+  
     if (remainingLives) {
       setUserCups(Number(remainingLives));
       setConsumptionLoading(false);
     }
-
+  
     if (lastCoffeeTime) {
       const lastCoffeeDate = new Date(parseInt(lastCoffeeTime));
       const today = new Date();
-      const yesterday = new Date(today);
-      yesterday.setDate(today.getDate() - 1);
-
-      if (lastCoffeeDate < yesterday) {
+      today.setHours(0, 0, 0, 0); // Reset hours, minutes, seconds and milliseconds to zero
+  
+      if (lastCoffeeDate < today) { // Check if the last coffee date is before today
         setUserCups(Number(userCupsNb)); // Reset user's chosen daily consumption to default value
         localStorage.setItem("RemainingLives", JSON.stringify(userCupsNb));
         setConsumptionLoading(false);
       }
     }
   }, []);
-
+  
 
   // Handle setting user's daily consumption
   const handleUserCups = () => {
     setUserChosen(true);
     localStorage.setItem("userCupsNb", JSON.stringify(userCups));
     setConsumptionLoading(false);
-
   };
 
   // Handle consuming a coffee
@@ -96,9 +94,13 @@ export default function Home() {
 
         {userChosen ? (
           <>
-            <Button className="rounded-xl" onClick={handleCoffee}>
-              <Coffee className="mr-2 h-4 w-4" /> Just drank a coffee
-            </Button>
+            <button
+              onClick={handleCoffee}
+              className="relative px-8 py-2 rounded-lg bg-white text-slate-200 isolation-auto z-10 before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-left-full before:hover:left-0 before:rounded-full before:bg-slate-400 before:-z-10 before:aspect-square before:hover:scale-150 overflow-hidden before:hover:duration-700"
+            >
+              Just drank a coffee
+            </button>
+
             {consumptionLoading ? (
               <p>Loading consumption</p>
             ) : (
@@ -124,6 +126,7 @@ export default function Home() {
                   defaultValue={userCups}
                   onChange={(e) => setUserCups(Number(e.target.value))}
                 />
+
                 <Button
                   type="button"
                   variant="secondary"
