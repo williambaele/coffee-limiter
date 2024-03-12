@@ -49,7 +49,6 @@ export default function Home() {
     }
   }, []);
   
-
   // Handle setting user's daily consumption
   const handleUserCups = () => {
     setUserChosen(true);
